@@ -2,14 +2,15 @@
   import { onMount } from 'svelte'
   import { trpc } from '../lib/trpc'
 
+  let currentTime = 'loading...'
+
   onMount(() => {
     trpc.ping.subscribe(undefined, {
       onData(data) {
-        console.log('data', data)
+        currentTime = data
       },
     })
   })
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<p>It is currently {currentTime}</p>

@@ -1,44 +1,28 @@
-import { initTRPC } from '@trpc/server'
 import { applyWSSHandler } from '@trpc/server/adapters/ws'
-import { observable } from '@trpc/server/observable'
 
+import { appRouter } from './router'
 import ws from 'ws'
 
-// You can use any variable name you like.
-// We use t to keep things simple.
-const t = initTRPC.create()
+// Websocket Server
+const wss = new ws.Server({ port: 3001 })
 
-const appRouter = t.router({
-  greeting: t.procedure.query(() => 'hello tRPC v10!'),
-  ping: t.procedure.subscription(() => {
-    return observable((observer) => {
-      const interval = setInterval(() => {
-        observer.next('pong')
-      }, 100)
-      return () => {
-        clearInterval(interval)
-      }
-    })
-  }),
-})
+// TRPC Handler bound to the websocket server
+const handler = applyWSSHandler({ wss: wss, router: appRouter })
 
-// Export only the type of a router!
-// This prevents us from importing server code on the client.
-export type AppRouter = typeof appRouter
-
-const wss = new ws.Server({
-  port: 3001,
-})
-const handler = applyWSSHandler({ wss, router: appRouter })
+// Log when a client connects or disconnects
 wss.on('connection', (ws) => {
-  console.log(`➕➕ Connection (${wss.clients.size})`)
+  console.log(`-- Client connected (${wss.clients.size} clients)`)
   ws.once('close', () => {
-    console.log(`➖➖ Connection (${wss.clients.size})`)
+    console.log(`-- Client disconnected (${wss.clients.size} clients)`)
   })
 })
-console.log('✅ WebSocket Server listening on ws://localhost:3001')
+
+// Log when the server is shutting down
 process.on('SIGTERM', () => {
-  console.log('SIGTERM')
+  console.log('-- Server stopped')
   handler.broadcastReconnectNotification()
   wss.close()
 })
+
+//Log when the server has started
+console.log('-- Server started on ws://localhost:3001')
