@@ -1,17 +1,19 @@
 import { observable } from '@trpc/server/observable'
 import { procedure, router } from './trpc'
+import { SessionEvent } from './events'
 
 export type AppRouter = typeof appRouter
 
 export const appRouter = router({
-  // Returns the current time every second.
-  ping: procedure.subscription(() => {
-    return observable<string>((observer) => {
-      const interval = setInterval(() => {
-        observer.next(new Date().toISOString())
-      }, 1000)
+  gameEvents: procedure.subscription(({ ctx }) => {
+    return observable<SessionEvent>((observer) => {
+      const unsubscribe = ctx.subscribe(observer.next)
+      ctx.emit({ type: 'user connected' })
 
-      return () => clearInterval(interval)
+      return () => {
+        unsubscribe()
+        ctx.emit({ type: 'user disconnected' })
+      }
     })
   }),
 })

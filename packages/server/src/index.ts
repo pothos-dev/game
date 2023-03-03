@@ -2,12 +2,13 @@ import { applyWSSHandler } from '@trpc/server/adapters/ws'
 
 import { appRouter } from './router'
 import ws from 'ws'
+import { createContext } from './context'
 
 // Websocket Server
 const wss = new ws.Server({ port: 3001 })
 
 // TRPC Handler bound to the websocket server
-const handler = applyWSSHandler({ wss: wss, router: appRouter })
+const handler = applyWSSHandler({ wss: wss, router: appRouter, createContext })
 
 // Log when a client connects or disconnects
 wss.on('connection', (ws) => {

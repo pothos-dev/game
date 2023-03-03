@@ -1,16 +1,26 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte'
+  import type { SessionEvent } from '../../../server/src/events'
+  import GameView from '../components/GameView.svelte'
   import { trpc } from '../lib/trpc'
 
-  let currentTime = 'loading...'
+  let events: SessionEvent[] = []
 
   onMount(() => {
-    trpc.ping.subscribe(undefined, {
-      onData(data) {
-        currentTime = data
+    trpc.gameEvents.subscribe(undefined, {
+      onData(event) {
+        events = [event, ...events]
       },
     })
   })
 </script>
 
-<p>It is currently {currentTime}</p>
+<!-- 
+{#each events as event}
+  <div>{JSON.stringify(event)}</div>
+{/each} -->
+
+<div class="flex-1 flex flex-row">
+  <GameView />
+  <GameView />
+</div>
