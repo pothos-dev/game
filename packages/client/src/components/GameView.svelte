@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CardsInHand from "~/components/CardsInHand.svelte"
   import EventLog from "~/components/EventLog.svelte"
   import { connectSocket } from "~/lib/socket"
 
@@ -13,6 +14,8 @@
 
   <!-- Spacer -->
   <div class="flex-1" />
+
+  <CardsInHand />
 
   <EventLog {socket} />
 </div>
