@@ -1,30 +1,30 @@
 import { EventEmitter } from "ws"
-import { ServerEvent } from "~/types"
+import { ServerEvent, SessionId } from "~/types"
 
 export type Session = {
-  sessionId: string
+  sessionId: SessionId
 
   // Emit an event to all subscribers
-  emit(event: ServerEvent): void
+  send(event: ServerEvent): void
 
   // Subscribe to events
-  subscribe(listener: (event: ServerEvent) => void): () => void
+  listen(listener: (event: ServerEvent) => void): () => void
 }
 
-export const sessions = new Map<string, Session>()
+const sessions = new Map<SessionId, Session>()
 
-export function getSession(sessionId: string): Session {
-  let session = sessions.get(sessionId)
-  if (session) return session
+export function getSession(sessionId: SessionId): Session {
+  if (!sessions.has(sessionId)) {
+    const emitter = new EventEmitter()
 
-  const emitter = new EventEmitter()
-  const emit = (event: ServerEvent) => emitter.emit("event", event)
-  const subscribe = (listener: (event: ServerEvent) => void) => {
-    emitter.on("event", listener)
-    return () => emitter.off("event", listener)
+    const send = (event: ServerEvent) => emitter.emit("event", event)
+    const listen = (listener: (event: ServerEvent) => void) => {
+      emitter.on("event", listener)
+      return () => emitter.off("event", listener)
+    }
+
+    sessions.set(sessionId, { sessionId, send, listen })
   }
-  session = { sessionId, emit, subscribe }
-  sessions.set(sessionId, session)
 
-  return session
+  return sessions.get(sessionId)!
 }

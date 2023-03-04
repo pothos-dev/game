@@ -1,6 +1,7 @@
 import type { ClientEvent, ServerEvent } from "~/types"
 
 type ConnectArgs = {
+  sessionId: string
   playerName: string
 }
 
@@ -9,7 +10,7 @@ type Socket = {
   send: (event: ClientEvent) => void
 }
 
-export function connectSocket({ playerName }: ConnectArgs): Socket {
+export function connectSocket({ playerName, sessionId }: ConnectArgs): Socket {
   const socket = new WebSocket("ws://localhost:3001")
 
   const send = (event: ClientEvent) => {
@@ -27,7 +28,7 @@ export function connectSocket({ playerName }: ConnectArgs): Socket {
   }
 
   socket.onopen = () => {
-    send({ type: "connect", playerName })
+    send({ type: "connect", playerName, sessionId })
   }
 
   return { listen, send }
