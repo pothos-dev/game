@@ -5,7 +5,7 @@ type ConnectArgs = {
   playerName: string
 }
 
-type Socket = {
+export type Socket = {
   listen: (listener: (event: ServerEvent) => void) => () => void
   send: (event: ClientEvent) => void
 }
