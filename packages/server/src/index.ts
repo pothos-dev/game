@@ -1,13 +1,16 @@
 import { Server } from "ws"
 import { handleWebsocketConnection } from "~/clients"
+import { createLogger } from "~/logging"
+
+const log = createLogger("Server")
 
 // Websocket Server
 const server = new Server({ port: 3001 })
 process.on("SIGTERM", () => {
-  console.log("-- Server stopped")
+  log.info("Stopping")
   server.close()
 })
 
 server.on("connection", handleWebsocketConnection)
 
-console.log("-- Server started on ws://localhost:3001")
+log.info("Running on ws://localhost:3001")
