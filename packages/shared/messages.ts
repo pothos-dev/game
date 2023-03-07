@@ -6,6 +6,7 @@ export type ServerMessages = {
   "lobby/disconnected": { playerName: string }
   "lobby/chat": { message: string; playerName: string }
   "game/draw": { card: Card }
+  "game/discard": { cardId: string }
 }
 
 // Messages that the client sends to the server

@@ -2,33 +2,38 @@ import { faker } from "@faker-js/faker"
 import { createId } from "~/lib/ids"
 import { createLogger } from "~/lib/logging"
 import { createScheduler } from "~/lib/scheduler"
-import { ActiveGame, GameLobby } from "~/types"
+import { ActiveGame, GameLobby, Card } from "~/types"
 
 const log = createLogger("Game")
 
 export function startGame(lobby: GameLobby): ActiveGame {
+  const gameId = createId("game")
+  const players = lobby.players
+  const scheduler = createScheduler()
+
   log.info("Starting game", {
     lobbyId: lobby.lobbyId,
-    players: lobby.players.map((p) => p.playerName),
+    players: players.map((p) => p.playerName),
   })
 
-  const game = {
-    gameId: lobby.lobbyId,
-    players: lobby.players,
-    scheduler: createScheduler(),
-  }
+  scheduler.every(2, () => {
+    players.forEach((players) => {
+      const card: Card = {
+        cardId: createId("card"),
+        name: faker.science.chemicalElement().name,
+        color: faker.color.rgb(),
+      }
 
-  game.scheduler.every(2, () => {
-    game.players.forEach((players) => {
-      players.send("game/draw", {
-        card: {
-          cardId: createId("card"),
-          name: faker.science.chemicalElement().name,
-          color: faker.color.rgb(),
-        },
+      players.send("game/draw", { card })
+      scheduler.in(4.5, () => {
+        players.send("game/discard", { cardId: card.cardId })
       })
     })
   })
 
-  return game
+  return {
+    gameId,
+    players,
+    scheduler,
+  }
 }

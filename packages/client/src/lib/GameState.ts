@@ -8,8 +8,12 @@ const serverEventHandler: {
   "lobby/connected": () => {},
   "lobby/disconnected": () => {},
   "lobby/chat": () => {},
+
   "game/draw": (gs, { card }) => {
     gs.hand.update((hand) => [...hand, card])
+  },
+  "game/discard": (gs, { cardId }) => {
+    gs.hand.update((hand) => hand.filter((card) => card.cardId !== cardId))
   },
 }
 
@@ -30,10 +34,9 @@ export async function startGame(lobby: LobbyState): Promise<ActiveGame> {
   }
 
   // Process incoming events and update the game state
-  const subscription = serverConnection.messages.subscribe((serverMessage) => {
+  serverConnection.messages.subscribe((serverMessage) => {
     serverEventHandler[serverMessage.type](gameState, serverMessage.payload as any)
   })
 
-  // TODO unsubscribe
   return { gameState, serverConnection }
 }

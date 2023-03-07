@@ -4,6 +4,9 @@
   export let card: Card
 </script>
 
-<div class="w-32 h-12 rounded-md" style="background-color: {card.color};">
+<div
+  class="w-32 h-12 rounded-md flex flex-col items-center justify-center"
+  style="background-color: {card.color};"
+>
   <p>{card.name}</p>
 </div>
