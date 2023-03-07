@@ -1,11 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import type { ServerConnection } from "~/lib/srverConnection"
+  import { getGame } from "~/lib/game"
+  import { prettyJson } from "~/lib/json"
   import type { ServerMessage } from "~/types"
 
-  export let serverConnection: ServerConnection
   let messages: ServerMessage[] = []
 
+  const serverConnection = getGame().serverConnection
   onMount(() =>
     serverConnection.messages.subscribe((message) => {
       messages = [message, ...messages]
@@ -17,7 +18,7 @@
   {#each messages as message}
     <div>
       <span class="font-bold">{message.type}</span>
-      <span>{JSON.stringify(message.payload)}</span>
+      <span>{prettyJson(message.payload)}</span>
     </div>
   {/each}
 </div>

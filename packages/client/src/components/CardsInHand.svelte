@@ -1,9 +1,8 @@
 <script lang="ts">
   import CardInHand from "./CardInHand.svelte"
-  import type { GameState } from "~/types"
+  import { getGameState } from "~/lib/game"
 
-  export let gameState: GameState
-  let hand = gameState.hand
+  let hand = getGameState().player.hand
 </script>
 
 <div class="flex flex-row space-x-1">

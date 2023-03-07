@@ -1,6 +1,6 @@
 <script lang="ts">
   import GameView from "~/components/GameView.svelte"
-  import { startGame } from "~/lib/GameState"
+  import { startGame } from "~/lib/game"
 
   export let playerName: string
   const lobbyId = "lobby:asdf"

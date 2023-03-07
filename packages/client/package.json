@@ -13,6 +13,7 @@
   },
   "type": "module",
   "dependencies": {
+    "honeycomb-grid": "^4.0.1",
     "rxjs": "^7.8.0",
     "ws": "^8.12.1"
   },
