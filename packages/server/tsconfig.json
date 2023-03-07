@@ -2,6 +2,9 @@
   "compilerOptions": {
     "outDir": "dist",
 
+    "target": "esnext",
+    "moduleResolution": "node",
+
     "skipLibCheck": true,
     "strict": true,
 

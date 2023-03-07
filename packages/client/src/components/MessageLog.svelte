@@ -1,17 +1,18 @@
 <script lang="ts">
   import { onMount } from "svelte"
-  import { getGame } from "~/lib/game"
-  import { prettyJson } from "@shared/lib/json"
+  import { prettyJson } from "@shared/lib/utils"
   import type { ServerMessage } from "@shared/types/messages"
+  import { getGame } from "~/lib/Game"
 
+  const game = getGame()
   let messages: ServerMessage[] = []
 
-  const serverConnection = getGame().serverConnection
-  onMount(() =>
-    serverConnection.messages.subscribe((message) => {
+  onMount(() => {
+    const subscription = game.socket.messages.subscribe((message) => {
       messages = [message, ...messages]
     })
-  )
+    return () => subscription.unsubscribe()
+  })
 </script>
 
 <div class="flex flex-col h-20 overflow-y-scroll text-sm">

@@ -1,5 +1,5 @@
-export type Card = {
-  cardId: string
+export type CardState = {
+  id: string
   name: string
   color: string
 }

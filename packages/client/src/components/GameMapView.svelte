@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { getGameState } from "~/lib/game"
+  import { Game, getGame } from "~/lib/Game"
   import HexTile from "./HexTile.svelte"
 
-  const map = getGameState().map
-  const tiles = map.grid.toArray()
+  const grid = getGame().map.grid
+  const tiles = grid.toArray()
 
-  const w = map.grid.pixelWidth * 1.1
-  const h = map.grid.pixelHeight * 1.1
+  const w = grid.pixelWidth * 1.1
+  const h = grid.pixelHeight * 1.1
   const viewBox = [-w / 2, -h / 2, w, h].join(" ")
 </script>
 

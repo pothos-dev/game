@@ -1,13 +1,16 @@
 <script lang="ts">
   import GameView from "~/components/GameView.svelte"
-  import { startGame } from "~/lib/game"
+  import { Game, provideGame } from "~/lib/Game"
+  import { getPlayer } from "~/lib/Player"
+  import type { Socket } from "~/lib/Socket"
 
-  export let playerName: string
-  const lobbyId = "lobby:asdf"
+  export let socket: Socket
+  export let lobbyId = "lobby:asdf"
+
+  const player = getPlayer()
+  const game = new Game({ socket, player })
+  provideGame(game)
+  game.connect(lobbyId)
 </script>
 
-{#await startGame({ playerName, lobbyId })}
-  <p>Connecting to Lobby...</p>
-{:then activeGame}
-  <GameView {activeGame} />
-{/await}
+<GameView />

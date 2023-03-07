@@ -1,5 +1,5 @@
 import { PlayerConfig } from "~/types/players"
-import type { Card } from "./cards"
+import type { CardState } from "./cards"
 
 // Messages that the server sends to the client
 export type ServerMessages = {
@@ -16,7 +16,7 @@ export type ServerMessages = {
   "game/start": { startPlayerId: string }
 
   // The player draws a card
-  "game/player/draw": { card: Card }
+  "game/player/draw": { card: CardState }
 
   // The player discards a card
   "game/player/discard": { cardId: string }
@@ -25,7 +25,7 @@ export type ServerMessages = {
 // Messages that the client sends to the server
 export type ClientMessages = {
   // The player joins a lobby
-  "lobby/connect": { lobbyId: string; player: PlayerConfig }
+  connect: { lobbyId: string; player: PlayerConfig }
 }
 
 /*
