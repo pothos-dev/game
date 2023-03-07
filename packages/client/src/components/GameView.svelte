@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CardsInHand from "~/components/CardsInHand.svelte"
+  import CardsInHand from "~/components/HandView.svelte"
   import HexMap from "~/components/GameMapView.svelte"
   import MessageLog from "~/components/MessageLog.svelte"
   import { getPlayer } from "~/lib/Player"

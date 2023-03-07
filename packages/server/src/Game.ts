@@ -12,14 +12,12 @@ export class Game {
   constructor(players: Player[]) {
     this.id = createId("game")
     this.players = players
-
-    this.#start()
   }
 
-  #start() {
+  start() {
     this.#log.info("Starting game", { gameId: this.id })
 
-    this.#every(2, this.#drawAndDiscard)
+    this.#every(2.5, () => this.#drawAndDiscard())
   }
 
   #drawAndDiscard() {

@@ -1,39 +1,48 @@
 import { Client } from "~/Client"
+import { Game } from "~/Game"
 import { Player } from "~/Player"
-
-const lobbyRegister = new Map<string, Lobby>()
 
 export class Lobby {
   id: string
   players: Player[] = []
+  game?: Game
 
   static welcome(socket: Client) {
     // Once the client has introduced itself,
     // we can route the player to the correct lobby.
     socket.messages.subscribe((message) => {
       if (message.type == "connect") {
-        const lobby = Lobby.get(message.payload.lobbyId)
+        const lobby = getLobby(message.payload.lobbyId)
         const player = new Player(socket, message.payload.player)
         lobby.connect(player)
       }
     })
   }
 
-  // Get the lobby with the given ID
-  static get(id: string): Lobby {
-    if (!lobbyRegister.has(id)) {
-      lobbyRegister.set(id, new Lobby(id))
-    }
-    return lobbyRegister.get(id)!
-  }
-
   // Let a player connect to a lobby
   connect(player: Player) {
+    if (this.game) {
+      throw Error("Cannot join lobby while game is in progress")
+    }
+
     this.players.push(player)
+
+    if (this.players.length == 2) {
+      this.game = new Game(this.players)
+      this.game.start()
+    }
   }
 
   constructor(id: string) {
     this.id = id
     this.players = []
   }
+}
+
+const lobbyRegister = new Map<string, Lobby>()
+function getLobby(id: string) {
+  if (!lobbyRegister.has(id)) {
+    lobbyRegister.set(id, new Lobby(id))
+  }
+  return lobbyRegister.get(id)!
 }
