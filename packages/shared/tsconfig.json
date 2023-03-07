@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    "lib": ["esnext", "dom"],
 
     "skipLibCheck": true,
     "strict": true,
-
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"],
-      "@shared/*": ["../shared/src/*"]
-    }
+      "~/*": ["./src/*"]
+    },
+    "composite": true
   },
-  "include": ["src"],
-  "references": [{ "path": "../shared" }]
+  "include": ["src"]
 }

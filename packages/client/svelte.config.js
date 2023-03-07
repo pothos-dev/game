@@ -15,6 +15,7 @@ const config = {
 
     alias: {
       "~": "./src",
+      "@shared": "../shared/src",
     },
   },
 }

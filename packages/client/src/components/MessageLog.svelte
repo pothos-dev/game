@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte"
   import { getGame } from "~/lib/game"
-  import { prettyJson } from "~/lib/json"
-  import type { ServerMessage } from "~/types"
+  import { prettyJson } from "@shared/lib/json"
+  import type { ServerMessage } from "@shared/types/messages"
 
   let messages: ServerMessage[] = []
 

@@ -1,4 +1,4 @@
-import type { ClientMessages, ServerMessage } from "~/types"
+import type { ClientMessages, ServerMessage } from "@shared/types/messages"
 import { Observable } from "rxjs"
 
 // Wraps a websocket connection to allow for bidirectional communication
@@ -11,7 +11,7 @@ export type ServerConnection = {
 
 // Connects to the server and returns a Socket object.
 export async function connectToServer(): Promise<ServerConnection> {
-  const socket = new WebSocket("ws://localhost:3001")
+  const socket = new WebSocket("ws://localhost:8080")
 
   const serverConnection: ServerConnection = {
     messages: new Observable((observer) => {

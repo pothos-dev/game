@@ -4,8 +4,8 @@ import { createLogger } from "~/lib/logging"
 
 const log = createLogger("Server")
 
-export function startServer() {
-  const server = new Server({ port: 3001 })
+export function startServer(port = 8080) {
+  const server = new Server({ port })
 
   // Handle incoming socket connections
   server.on("connection", handleWebsocketConnection)
@@ -16,5 +16,7 @@ export function startServer() {
     server.close()
   })
 
-  log.info("Running on ws://localhost:3001")
+  server.once("listening", () => {
+    log.info(`Listening on ws://localhost:${port}`)
+  })
 }

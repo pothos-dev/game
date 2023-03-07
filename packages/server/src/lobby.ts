@@ -1,6 +1,7 @@
+import { TypedClientMessage } from "@shared/types/messages"
 import { startGame } from "~/game"
 import { createLogger } from "~/lib/logging"
-import { ClientConnection, TypedClientMessage, GameLobby, PlayerConnection } from "~/types"
+import { ClientConnection, GameLobby, PlayerConnection } from "~/types"
 
 const log = createLogger("Lobby")
 

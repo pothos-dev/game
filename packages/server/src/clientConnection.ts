@@ -3,7 +3,8 @@ import { WebSocket, MessageEvent } from "ws"
 import { createId } from "~/lib/ids"
 import { joinLobby } from "~/lobby"
 import { createLogger } from "~/lib/logging"
-import { ClientConnection, ClientMessage } from "~/types"
+import { ClientConnection } from "~/types"
+import { ClientMessage } from "@shared/types/messages"
 
 const log = createLogger("ClientConnection")
 

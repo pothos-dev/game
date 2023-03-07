@@ -1,7 +1,5 @@
 import { Observable } from "rxjs"
-import type { ClientMessage, ServerMessages } from "../../shared"
-
-export * from "../../shared"
+import type { ClientMessage, ServerMessages } from "@shared/types/messages"
 
 export type SessionId = string
 

@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker"
+import { Card } from "@shared/types/cards"
 import { createId } from "~/lib/ids"
 import { createLogger } from "~/lib/logging"
 import { createScheduler } from "~/lib/scheduler"
-import { ActiveGame, GameLobby, Card } from "~/types"
+import { ActiveGame, GameLobby } from "~/types"
 
 const log = createLogger("Game")
 

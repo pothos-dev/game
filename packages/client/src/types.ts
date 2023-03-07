@@ -1,9 +1,7 @@
 import type { Writable } from "svelte/store"
 import type { ServerConnection } from "~/lib/srverConnection"
-import type { Card } from "../../shared"
 import type { Grid, Hex } from "honeycomb-grid"
-
-export * from "../../shared"
+import type { Card } from "@shared/types/cards"
 
 export type LobbyState = {
   lobbyId: string
