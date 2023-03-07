@@ -1,13 +1,13 @@
 <script lang="ts">
   import GameView from "~/components/GameView.svelte"
-  import { initGame } from "~/lib/game/GameState"
+  import { startGame } from "~/lib/game/GameState"
 
   export let playerName: string
-  const sessionId = "main-session"
+  const lobbyId = "lobby:asdf"
 </script>
 
-{#await initGame({ playerName, sessionId })}
-  <p>Connecting...</p>
+{#await startGame({ playerName, lobbyId })}
+  <p>Connecting to Lobby...</p>
 {:then activeGame}
   <GameView {activeGame} />
 {/await}

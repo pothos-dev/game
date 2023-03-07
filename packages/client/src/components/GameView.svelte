@@ -1,10 +1,9 @@
 <script lang="ts">
   import CardsInHand from "~/components/CardsInHand.svelte"
   import EventLog from "~/components/EventLog.svelte"
-  import type { ActiveGame } from "~/lib/game/GameState"
+  import type { ActiveGame } from "~/types"
 
   export let activeGame: ActiveGame
-  const socket = activeGame.socket
   const gameState = activeGame.gameState
 </script>
 
@@ -17,5 +16,5 @@
 
   <CardsInHand />
 
-  <EventLog {socket} />
+  <EventLog serverConnection={activeGame.serverConnection} />
 </div>

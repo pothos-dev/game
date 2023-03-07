@@ -1,26 +1,9 @@
-import { writable, type Writable } from "svelte/store"
-import { connectSocket, type Socket } from "~/lib/socket"
-import type { Card, ServerEvent } from "~/types"
-
-export type LobbyState = {
-  sessionId: string
-  playerName: string
-}
-
-export type GameState = {
-  player: {
-    name: string
-  }
-  hand: Writable<Card[]>
-}
-
-export type ActiveGame = {
-  gameState: GameState
-  socket: Socket
-}
+import { writable } from "svelte/store"
+import { connectToServer } from "~/lib/connection"
+import type { ActiveGame, GameState, LobbyState, ServerMessage } from "~/types"
 
 const serverEventHandler: {
-  [T in ServerEvent["type"]]: (gs: GameState, event: Extract<ServerEvent, { type: T }>) => void
+  [T in ServerMessage["type"]]: (gs: GameState, event: Extract<ServerMessage, { type: T }>) => void
 } = {
   "draw card": (gs, event) => {
     gs.hand.update((hand) => [...hand, event.card])
@@ -30,24 +13,28 @@ const serverEventHandler: {
   "user disconnected": () => {},
 }
 
-export async function initGame({ playerName, sessionId }: LobbyState): Promise<ActiveGame> {
+export async function startGame(lobby: LobbyState): Promise<ActiveGame> {
   // Connect to the server
-  const socket = await connectSocket()
+  const serverConnection = await connectToServer()
 
   // Initialize connection
-  socket.send({ type: "connect", playerName, sessionId })
+  serverConnection.clientMessages.next({
+    type: "join lobby",
+    playerName: lobby.playerName,
+    lobbyId: lobby.lobbyId,
+  })
 
   // Create empty game state
   const gameState: GameState = {
-    player: { name: playerName },
+    player: { name: lobby.playerName },
     hand: writable([]),
   }
 
   // Process incoming events and update the game state
-  const unsubscribe = socket.listen((event) => {
-    serverEventHandler[event.type](gameState, event as any)
+  const subsription = serverConnection.serverMessages.subscribe((serverMessage) => {
+    serverEventHandler[serverMessage.type](gameState, serverMessage as any)
   })
 
   // TODO unsubscribe
-  return { gameState, socket }
+  return { gameState, serverConnection }
 }
