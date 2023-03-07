@@ -1,16 +1,14 @@
 import type { ClientEvent, ServerEvent } from "~/types"
 
-type ConnectArgs = {
-  sessionId: string
-  playerName: string
-}
-
+// Wraps a websocket connection to allow for bidirectional communication
+// with the server.
 export type Socket = {
   listen: (listener: (event: ServerEvent) => void) => () => void
   send: (event: ClientEvent) => void
 }
 
-export function connectSocket({ playerName, sessionId }: ConnectArgs): Socket {
+// Connects to the server and returns a Socket object.
+export async function connectSocket(): Promise<Socket> {
   const socket = new WebSocket("ws://localhost:3001")
 
   const send = (event: ClientEvent) => {
@@ -27,9 +25,10 @@ export function connectSocket({ playerName, sessionId }: ConnectArgs): Socket {
     return () => socket.removeEventListener("message", messageListener)
   }
 
-  socket.onopen = () => {
-    send({ type: "connect", playerName, sessionId })
-  }
-
-  return { listen, send }
+  // Wait for the socket to completely open before returning
+  return new Promise<Socket>((resolve) => {
+    socket.addEventListener("open", () => {
+      resolve({ listen, send })
+    })
+  })
 }

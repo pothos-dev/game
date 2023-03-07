@@ -1,8 +1,8 @@
 <script>
-  import GameView from '../components/GameView.svelte'
+  import LobbyView from "~/components/LobbyView.svelte"
 </script>
 
 <div class="flex-1 flex flex-row">
-  <GameView playerName="Yin" />
-  <GameView playerName="Yang" />
+  <LobbyView playerName="Yin" />
+  <LobbyView playerName="Yang" />
 </div>
