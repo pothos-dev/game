@@ -1,6 +1,6 @@
 import type { Writable } from "svelte/store"
-import type { ServerConnection } from "~/lib/connection"
-import type { Card, ClientMessage, ServerMessage } from "../../shared"
+import type { ServerConnection } from "~/lib/srverConnection"
+import type { Card } from "../../shared"
 
 export * from "../../shared"
 

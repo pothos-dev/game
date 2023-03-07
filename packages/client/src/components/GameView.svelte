@@ -1,6 +1,6 @@
 <script lang="ts">
   import CardsInHand from "~/components/CardsInHand.svelte"
-  import EventLog from "~/components/EventLog.svelte"
+  import MessageLog from "~/components/MessageLog.svelte"
   import type { ActiveGame } from "~/types"
 
   export let activeGame: ActiveGame
@@ -14,7 +14,7 @@
   <!-- Spacer -->
   <div class="flex-1" />
 
-  <CardsInHand />
+  <CardsInHand {gameState} />
 
-  <EventLog serverConnection={activeGame.serverConnection} />
+  <MessageLog serverConnection={activeGame.serverConnection} />
 </div>

@@ -1,11 +1,12 @@
-import type { ClientMessage, ServerMessage } from "~/types"
-import { Observable, type Observer } from "rxjs"
+import type { ClientMessages, ServerMessage } from "~/types"
+import { Observable } from "rxjs"
 
 // Wraps a websocket connection to allow for bidirectional communication
 // with the server.
 export type ServerConnection = {
-  serverMessages: Observable<ServerMessage>
-  clientMessages: Observer<ClientMessage>
+  messages: Observable<ServerMessage>
+
+  send<T extends keyof ClientMessages>(type: T, payload: ClientMessages[T]): void
 }
 
 // Connects to the server and returns a Socket object.
@@ -13,7 +14,7 @@ export async function connectToServer(): Promise<ServerConnection> {
   const socket = new WebSocket("ws://localhost:3001")
 
   const serverConnection: ServerConnection = {
-    serverMessages: new Observable((observer) => {
+    messages: new Observable((observer) => {
       const onMessage = (ev: MessageEvent) => {
         const serverMessage = JSON.parse(ev.data as string) as ServerMessage
         observer.next(serverMessage)
@@ -30,17 +31,9 @@ export async function connectToServer(): Promise<ServerConnection> {
       }
     }),
 
-    clientMessages: {
-      next(clientMessage: ClientMessage) {
-        const data = JSON.stringify(clientMessage)
-        socket.send(data)
-      },
-      error(error) {
-        console.error("Error in clientMessages", { error })
-      },
-      complete() {
-        socket.close()
-      },
+    send(type, payload) {
+      const data = JSON.stringify({ type, payload })
+      socket.send(data)
     },
   }
 

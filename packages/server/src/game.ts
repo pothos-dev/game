@@ -1,3 +1,5 @@
+import { faker } from "@faker-js/faker"
+import { createId } from "~/lib/ids"
 import { createLogger } from "~/lib/logging"
 import { createScheduler } from "~/lib/scheduler"
 import { ActiveGame, GameLobby } from "~/types"
@@ -18,12 +20,11 @@ export function startGame(lobby: GameLobby): ActiveGame {
 
   game.scheduler.every(2, () => {
     game.players.forEach((players) => {
-      players.serverEvents.next({
-        type: "draw card",
+      players.send("game/draw", {
         card: {
-          cardId: "1",
-          name: "Card 1",
-          color: "red",
+          cardId: createId("card"),
+          name: faker.science.chemicalElement().name,
+          color: faker.color.rgb(),
         },
       })
     })

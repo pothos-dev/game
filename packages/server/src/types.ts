@@ -1,5 +1,5 @@
-import { Observable, Observer } from "rxjs"
-import type { ClientMessage, ServerMessage } from "../../shared/messages"
+import { Observable } from "rxjs"
+import type { ClientMessage, ServerMessages } from "../../shared/messages"
 
 export * from "../../shared/messages"
 
@@ -7,8 +7,8 @@ export type SessionId = string
 
 export type ClientConnection = {
   clientId: string
-  serverEvents: Observer<ServerMessage>
-  clientMessages: Observable<ClientMessage>
+  messages: Observable<ClientMessage>
+  send<T extends keyof ServerMessages>(type: T, payload: ServerMessages[T]): void
 }
 
 export type PlayerConnection = ClientConnection & {

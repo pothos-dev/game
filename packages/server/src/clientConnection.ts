@@ -1,9 +1,9 @@
 import { Observable } from "rxjs"
-import { WebSocket, MessageEvent, ErrorEvent } from "ws"
+import { WebSocket, MessageEvent } from "ws"
 import { createId } from "~/lib/ids"
 import { joinLobby } from "~/lobby"
 import { createLogger } from "~/lib/logging"
-import { ClientConnection, ClientMessage, ServerMessage } from "~/types"
+import { ClientConnection, ClientMessage } from "~/types"
 
 const log = createLogger("ClientConnection")
 
@@ -17,7 +17,7 @@ export function handleWebsocketConnection(socket: WebSocket) {
     clientId: createId("client"),
 
     // Wrap incoming messages in an Observable
-    clientMessages: new Observable((observer) => {
+    messages: new Observable((observer) => {
       const onMessage = (ev: MessageEvent) => {
         const clientMessage = JSON.parse(ev.data as string) as ClientMessage
         observer.next(clientMessage)
@@ -34,27 +34,18 @@ export function handleWebsocketConnection(socket: WebSocket) {
       }
     }),
 
-    // Wrap outgoing messages in an Observer
-    serverEvents: {
-      next(serverMessage: ServerMessage) {
-        const data = JSON.stringify(serverMessage)
-        socket.send(data)
-      },
-      error(error) {
-        log.error("Error in serverEvents", { error })
-      },
-      complete() {
-        socket.close()
-      },
+    send(type, payload) {
+      const data = JSON.stringify({ type, payload })
+      socket.send(data)
     },
   }
 
   log.info("Client connected", { clientId: clientConnection.clientId })
 
   // Wait for the client to join a lobby
-  clientConnection.clientMessages.subscribe({
+  clientConnection.messages.subscribe({
     next(message) {
-      if (message.type == "join lobby") {
+      if (message.type == "lobby/join") {
         joinLobby(clientConnection, message)
         // TODO prevent joining multiple lobbies!
       }

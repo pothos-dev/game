@@ -1,14 +1,14 @@
 import { startGame } from "~/game"
 import { createLogger } from "~/lib/logging"
-import { ClientConnection, ClientMessageOf, GameLobby, PlayerConnection } from "~/types"
+import { ClientConnection, TypedClientMessage, GameLobby, PlayerConnection } from "~/types"
 
 const log = createLogger("Lobby")
 
 const lobbies = new Map<string, GameLobby>()
 
-export function joinLobby(client: ClientConnection, message: ClientMessageOf<"join lobby">) {
+export function joinLobby(client: ClientConnection, message: TypedClientMessage<"lobby/join">) {
   const { clientId } = client
-  const { lobbyId, playerName } = message
+  const { lobbyId, playerName } = message.payload
 
   const playerConnection: PlayerConnection = {
     ...client,
