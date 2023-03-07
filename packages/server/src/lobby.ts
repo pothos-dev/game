@@ -1,35 +1,43 @@
 import { TypedClientMessage } from "@shared/types/messages"
+import { PlayerConfig } from "@shared/types/players"
+import { ClientConnection } from "~/clientConnection"
 import { startGame } from "~/game"
 import { createLogger } from "~/lib/logging"
-import { ClientConnection, GameLobby, PlayerConnection } from "~/types"
 
 const log = createLogger("Lobby")
 
-const lobbies = new Map<string, GameLobby>()
+export type GameLobby = {
+  id: string
+  playerConnections: PlayerConnection[]
+}
 
-export function joinLobby(client: ClientConnection, message: TypedClientMessage<"lobby/join">) {
-  const { clientId } = client
-  const { lobbyId, playerName } = message.payload
+export type PlayerConnection = ClientConnection & { player: PlayerConfig }
 
-  const playerConnection: PlayerConnection = {
-    ...client,
-    playerName,
-  }
+export function joinLobby(
+  client: ClientConnection,
+  payload: TypedClientMessage<"lobby/connect">["payload"]
+) {
+  const { lobbyId, player } = payload
+  const playerConnection: PlayerConnection = { ...client, player: payload.player }
 
-  let lobby = lobbies.get(lobbyId)
-  if (!lobby) {
-    lobby = {
-      lobbyId,
-      players: [],
-    }
-    lobbies.set(lobbyId, lobby)
-  }
+  const lobby = getLobby(lobbyId)
+  lobby.playerConnections.push(playerConnection)
 
-  lobby.players.push(playerConnection)
+  log.info("Player joined lobby", { lobbyId, clientId: client.id, player })
 
-  log.info("Player joined lobby", { lobbyId, clientId, playerName })
-
-  if (lobby.players.length == 2) {
+  // Automatically start the game when two players have joined
+  if (lobby.playerConnections.length == 2) {
     startGame(lobby)
   }
+}
+
+const lobbies = new Map<string, GameLobby>()
+
+function getLobby(lobbyId: string): GameLobby {
+  let lobby = lobbies.get(lobbyId)
+  if (!lobby) {
+    lobby = { id: lobbyId, playerConnections: [] }
+    lobbies.set(lobbyId, lobby)
+  }
+  return lobby
 }

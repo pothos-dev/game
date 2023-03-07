@@ -1,18 +1,36 @@
+import { PlayerConfig } from "~/types/players"
 import type { Card } from "./cards"
 
 // Messages that the server sends to the client
 export type ServerMessages = {
-  "lobby/connected": { playerName: string }
-  "lobby/disconnected": { playerName: string }
-  "lobby/chat": { message: string; playerName: string }
-  "game/draw": { card: Card }
-  "game/discard": { cardId: string }
+  // A new player joins the lobby
+  "lobby/connected": { player: PlayerConfig }
+
+  // A player leaves lobby
+  "lobby/disconnected": { playerId: string }
+
+  // A player sends a chat message to all players
+  "lobby/chat": { player: PlayerConfig; message: string }
+
+  // The game has started
+  "game/start": { startPlayerId: string }
+
+  // The player draws a card
+  "game/player/draw": { card: Card }
+
+  // The player discards a card
+  "game/player/discard": { cardId: string }
 }
 
 // Messages that the client sends to the server
 export type ClientMessages = {
-  "lobby/join": { lobbyId: string; playerName: string }
+  // The player joins a lobby
+  "lobby/connect": { lobbyId: string; player: PlayerConfig }
 }
+
+/*
+ * Helper methods below
+ */
 
 export type ServerMessage = {
   [T in keyof ServerMessages]: { type: T; payload: ServerMessages[T] }

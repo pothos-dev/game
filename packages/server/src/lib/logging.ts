@@ -1,4 +1,5 @@
 import * as chalk from "chalk"
+import { prettyJson } from "@shared/lib/json"
 
 export type LogLevel = "debug" | "info" | "warn" | "error"
 export type Logger = {
@@ -21,6 +22,6 @@ function _log(level: LogLevel, name: string, message: string, jsonPayload?: obje
     chalk.gray(`${now}`),
     chalk.blue(`[${name}]`),
     message,
-    jsonPayload ? chalk.gray(JSON.stringify(jsonPayload)) : ""
+    jsonPayload ? chalk.gray(prettyJson(jsonPayload)) : ""
   )
 }

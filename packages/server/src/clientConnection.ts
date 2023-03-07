@@ -3,10 +3,15 @@ import { WebSocket, MessageEvent } from "ws"
 import { createId } from "~/lib/ids"
 import { joinLobby } from "~/lobby"
 import { createLogger } from "~/lib/logging"
-import { ClientConnection } from "~/types"
-import { ClientMessage } from "@shared/types/messages"
+import { ClientMessage, ServerMessages } from "@shared/types/messages"
 
 const log = createLogger("ClientConnection")
+
+export type ClientConnection = {
+  id: string
+  messages: Observable<ClientMessage>
+  send<T extends keyof ServerMessages>(type: T, payload: ServerMessages[T]): void
+}
 
 // This function is called when a new WebSocket connection is established
 // We figure out which session the client is trying to connect to
@@ -15,7 +20,7 @@ export function handleWebsocketConnection(socket: WebSocket) {
   // Convert the WebSocket into a ClientConnection
   const clientConnection: ClientConnection = {
     // Create a unique ID for this client
-    clientId: createId("client"),
+    id: createId("client"),
 
     // Wrap incoming messages in an Observable
     messages: new Observable((observer) => {
@@ -41,18 +46,18 @@ export function handleWebsocketConnection(socket: WebSocket) {
     },
   }
 
-  log.info("Client connected", { clientId: clientConnection.clientId })
+  log.info("Client connected", { id: clientConnection.id })
 
   // Wait for the client to join a lobby
   clientConnection.messages.subscribe({
-    next(message) {
-      if (message.type == "lobby/join") {
-        joinLobby(clientConnection, message)
+    next({ type, payload }) {
+      if (type == "lobby/connect") {
+        joinLobby(clientConnection, payload)
         // TODO prevent joining multiple lobbies!
       }
     },
     complete() {
-      log.info("Client disconnected", { clientId: clientConnection.clientId })
+      log.info("Client disconnected", { id: clientConnection.id })
     },
   })
 }

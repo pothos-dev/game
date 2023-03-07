@@ -1,5 +1,10 @@
 import { Subscription } from "rxjs"
-import { Scheduler } from "~/types"
+
+export type Scheduler = {
+  in(sec: number, fn: () => void): void
+  every(sec: number, fn: () => void): void
+  shutdown(): void
+}
 
 export function createScheduler(): Scheduler {
   const timers = new Set<NodeJS.Timeout>()
