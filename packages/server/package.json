@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@unnamed-game/server",
   "scripts": {
     "dev": "ts-node-dev --respawn --exit-child -r tsconfig-paths/register src/entrypoint.ts"
   },
