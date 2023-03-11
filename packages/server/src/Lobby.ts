@@ -12,7 +12,7 @@ export class Lobby {
     // Once the client has introduced itself,
     // we can route the player to the correct lobby.
     socket.messages.subscribe((message) => {
-      if (message.type == "connect") {
+      if (message.type == "server/connect") {
         const lobby = getLobby(message.payload.lobbyId)
         const player = new Player(socket, message.payload.player)
         lobby.connect(player)

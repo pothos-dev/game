@@ -20,12 +20,17 @@ export type ServerMessages = {
 
   // The player discards a card
   "game/player/discard": { cardId: string }
+
+  // A player flips a tile
+  "game/map/flip": { playerId: string; tileId: string }
 }
 
 // Messages that the client sends to the server
 export type ClientMessages = {
   // The player joins a lobby
-  connect: { lobbyId: string; player: PlayerConfig }
+  "server/connect": { lobbyId: string; player: PlayerConfig }
+
+  "game/map/flip": { tileId: string }
 }
 
 /*

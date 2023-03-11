@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getGame } from "~/lib/Game"
-  import HexTile from "./HexTile.svelte"
+  import TileView from "./TileView.svelte"
 
   const grid = getGame().map.grid
   const tiles = grid.toArray()
@@ -12,6 +12,6 @@
 
 <svg class="w-full aspect-square" {viewBox}>
   {#each tiles as tile}
-    <HexTile {tile} />
+    <TileView {tile} />
   {/each}
 </svg>

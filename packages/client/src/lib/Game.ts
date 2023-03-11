@@ -13,7 +13,7 @@ export class Game {
   map = new TileMap()
 
   connect(lobbyId: string) {
-    this.socket.send("connect", {
+    this.socket.send("server/connect", {
       lobbyId,
       player: this.player,
     })
@@ -28,12 +28,15 @@ export class Game {
     this.socket = socket
   }
 
-  #handleMessage(message: ServerMessage) {
-    if (message.type === "game/player/draw") {
-      this.hand.draw(message.payload.card)
+  #handleMessage({ type, payload }: ServerMessage) {
+    if (type == "game/player/draw") {
+      this.hand.draw(payload.card)
     }
-    if (message.type === "game/player/discard") {
-      this.hand.discard(message.payload.cardId)
+    if (type == "game/player/discard") {
+      this.hand.discard(payload.cardId)
+    }
+    if (type == "game/map/flip") {
+      this.map.getTile(payload.tileId).flip(payload.playerId)
     }
   }
 }

@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker"
 import { createId } from "@shared/lib/utils"
+import { ClientMessage, ServerMessages } from "@shared/types/messages"
 import { Card } from "~/Card"
 import { Logger } from "~/lib/Logger"
 import { Player } from "~/Player"
@@ -15,12 +16,25 @@ export class Game {
     this.id = createId("game")
     this.players = players
     this.map = new TileMap()
+
+    this.players.forEach((player) => {
+      player.socket.messages.subscribe((message) => this.#handleMessage(message, player))
+    })
   }
 
   start() {
     this.#log.info("Starting game", { gameId: this.id })
 
     this.#every(2.5, () => this.#drawAndDiscard())
+  }
+
+  #handleMessage({ type, payload }: ClientMessage, activePlayer: Player) {
+    if (type == "game/map/flip") {
+      this.#sendToAll("game/map/flip", {
+        playerId: activePlayer.id,
+        tileId: payload.tileId,
+      })
+    }
   }
 
   #drawAndDiscard() {
@@ -42,5 +56,9 @@ export class Game {
 
   #every(seconds: number, fn: () => void) {
     setInterval(fn, seconds * 1000)
+  }
+
+  #sendToAll<T extends keyof ServerMessages>(type: T, payload: ServerMessages[T]): void {
+    this.players.forEach((player) => player.send(type, payload))
   }
 }
