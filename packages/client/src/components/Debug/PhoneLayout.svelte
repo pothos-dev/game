@@ -17,7 +17,7 @@
     bind:clientHeight={containerHeight}
   >
     <div
-      class="flex bg-black rounded-3xl m-4 border-2 border-black text-white"
+      class="flex bg-black rounded-3xl m-4 border-2 border-black text-white max-w-full"
       style="width:{slotWidth}px;height:{slotHeight}px"
     >
       <slot />

@@ -32,7 +32,16 @@ export class Game {
       })),
     })
 
-    this.#every(2.5, () => this.#drawAndDiscard())
+    // All 10 seconds, replace the cards in each players hand
+    this.#every(10, () => {
+      this.players.forEach((player) => {
+        const cards = [Card.random(), Card.random(), Card.random(), Card.random()]
+        cards.forEach((card) => player.send("game/player/draw", { card }))
+        this.#in(10, () => {
+          cards.forEach((card) => player.send("game/player/discard", { cardId: card.id }))
+        })
+      })
+    })
   }
 
   #handleMessage({ type, payload }: ClientMessage, activePlayer: Player) {
@@ -42,19 +51,6 @@ export class Game {
         tileId: payload.tileId,
       })
     }
-  }
-
-  #drawAndDiscard() {
-    this.players.forEach((player) => {
-      // Create a random card
-      const card = Card.random()
-      player.send("game/player/draw", { card })
-
-      const discardAfter = faker.datatype.number({ min: 1, max: 5 })
-      this.#in(discardAfter, () => {
-        player.send("game/player/discard", { cardId: card.id })
-      })
-    })
   }
 
   #in(seconds: number, fn: () => void) {
