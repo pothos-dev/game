@@ -1,5 +1,5 @@
 <script>
-  import PlayerView from "../components/PlayerView.svelte"
+  import PlayerView from "../components/Debug/PlayerView.svelte"
   import { Player } from "../lib/Player"
   const players = [
     new Player({ id: "1", name: "Yin", color: "red" }),

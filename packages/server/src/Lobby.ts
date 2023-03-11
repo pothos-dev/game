@@ -1,5 +1,6 @@
 import { Client } from "~/Client"
 import { Game } from "~/Game"
+import { Logger } from "~/lib/Logger"
 import { Player } from "~/Player"
 
 export class Lobby {
@@ -22,7 +23,8 @@ export class Lobby {
   // Let a player connect to a lobby
   connect(player: Player) {
     if (this.game) {
-      throw Error("Cannot join lobby while game is in progress")
+      this.#log.error("Cannot join lobby while game is in progress")
+      return
     }
 
     this.players.push(player)
@@ -33,6 +35,7 @@ export class Lobby {
     }
   }
 
+  #log = new Logger("Lobby")
   constructor(id: string) {
     this.id = id
     this.players = []

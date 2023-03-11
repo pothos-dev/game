@@ -10,10 +10,13 @@ export class Socket {
   }
 
   static connect(): Promise<Socket> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const socket = new WebSocket("ws://localhost:8080")
       socket.onopen = () => {
         resolve(new Socket(socket))
+      }
+      socket.onerror = (ev) => {
+        reject("An error occured")
       }
     })
   }

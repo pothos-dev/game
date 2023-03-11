@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import { createId } from "@shared/lib/utils"
-  import GameView from "~/components/GameView.svelte"
+  import GameView from "~/components/Game/GameView.svelte"
   import { Game, provideGame } from "~/lib/Game"
   import { getPlayer } from "~/lib/Player"
   import type { Socket } from "~/lib/Socket"
