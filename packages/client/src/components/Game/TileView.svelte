@@ -6,7 +6,7 @@
   let { id, controllingPlayerId, center, corners } = tile
 
   const game = getGame()
-  $: color = $controllingPlayerId ? game.player.color : "#fff4"
+  $: color = $controllingPlayerId ? game.getPlayer($controllingPlayerId).color : "#fff4"
 
   function onClick() {
     game.socket.send("game/map/flip", { tileId: id })

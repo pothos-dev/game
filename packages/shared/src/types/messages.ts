@@ -13,7 +13,7 @@ export type ServerMessages = {
   "lobby/chat": { player: PlayerConfig; message: string }
 
   // The game has started
-  "game/start": { startPlayerId: string }
+  "game/start": { players: PlayerConfig[] }
 
   // The player draws a card
   "game/player/draw": { card: CardState }

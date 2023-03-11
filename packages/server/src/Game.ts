@@ -24,6 +24,13 @@ export class Game {
 
   start() {
     this.#log.info("Starting game", { gameId: this.id })
+    this.#sendToAll("game/start", {
+      players: this.players.map((player) => ({
+        id: player.id,
+        name: player.name,
+        color: player.color,
+      })),
+    })
 
     this.#every(2.5, () => this.#drawAndDiscard())
   }

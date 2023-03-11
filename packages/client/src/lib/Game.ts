@@ -8,9 +8,9 @@ import type { Socket } from "~/lib/Socket"
 export class Game {
   socket: Socket
   player: Player
-
-  hand = new Hand()
-  map = new TileMap()
+  players: Player[]
+  hand: Hand
+  map: TileMap
 
   connect(lobbyId: string) {
     this.socket.send("server/connect", {
@@ -23,12 +23,27 @@ export class Game {
     })
   }
 
+  getPlayer(id: string): Player {
+    for (const player of this.players) {
+      if (player.id == id) {
+        return player
+      }
+    }
+    throw new Error(`Player with id ${id} not found`)
+  }
+
   constructor({ socket, player }: { socket: Socket; player: Player }) {
     this.player = player
     this.socket = socket
+    this.players = [player]
+    this.hand = new Hand()
+    this.map = new TileMap()
   }
 
   #handleMessage({ type, payload }: ServerMessage) {
+    if (type == "game/start") {
+      this.players = payload.players
+    }
     if (type == "game/player/draw") {
       this.hand.draw(payload.card)
     }
