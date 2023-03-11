@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Game, getGame } from "~/lib/Game"
+  import { getGame } from "~/lib/Game"
   import HexTile from "./HexTile.svelte"
 
   const grid = getGame().map.grid

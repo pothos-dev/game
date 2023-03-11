@@ -5,7 +5,7 @@
   const cards = getGame().hand.cards
 </script>
 
-<div class="flex flex-row space-x-1">
+<div class="flex flex-row space-x-1 h-12">
   {#each $cards as card}
     <CardInHand {card} />
   {/each}

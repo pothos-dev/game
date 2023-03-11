@@ -1,6 +1,6 @@
 import type { ServerMessage } from "@shared/types/messages"
 import { getContext, setContext } from "svelte"
-import { GameMap } from "~/lib/GameMap"
+import { TileMap } from "~/lib/TileMap"
 import { Hand } from "~/lib/Hand"
 import type { Player } from "~/lib/Player"
 import type { Socket } from "~/lib/Socket"
@@ -10,7 +10,7 @@ export class Game {
   player: Player
 
   hand = new Hand()
-  map = new GameMap()
+  map = new TileMap()
 
   connect(lobbyId: string) {
     this.socket.send("connect", {

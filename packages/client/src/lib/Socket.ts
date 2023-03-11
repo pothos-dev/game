@@ -16,7 +16,7 @@ export class Socket {
         resolve(new Socket(socket))
       }
       socket.onerror = (ev) => {
-        reject("An error occured")
+        reject(new Error("An error occured during connection"))
       }
     })
   }

@@ -3,15 +3,18 @@ import { createId } from "@shared/lib/utils"
 import { Card } from "~/Card"
 import { Logger } from "~/lib/Logger"
 import { Player } from "~/Player"
+import { TileMap } from "~/TileMap"
 
 export class Game {
   id: string
   players: Player[]
+  map: TileMap
 
   #log = new Logger("Game")
   constructor(players: Player[]) {
     this.id = createId("game")
     this.players = players
+    this.map = new TileMap()
   }
 
   start() {

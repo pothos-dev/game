@@ -1,7 +1,6 @@
 <script lang="ts">
-  import CardsInHand from "~/components/Game/HandView.svelte"
-  import HexMap from "~/components/Game/GameMapView.svelte"
-  import MessageLog from "~/components/Debug/MessageLog.svelte"
+  import HandView from "~/components/Game/HandView.svelte"
+  import TileMapView from "~/components/Game/TileMapView.svelte"
   import { getPlayer } from "~/lib/Player"
 </script>
 
@@ -12,12 +11,10 @@
   <!-- Spacer -->
   <div class="flex-1" />
 
-  <HexMap />
+  <TileMapView />
 
   <!-- Spacer -->
   <div class="flex-1" />
 
-  <CardsInHand />
-
-  <MessageLog />
+  <HandView />
 </div>
